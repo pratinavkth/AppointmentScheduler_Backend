@@ -57,7 +57,7 @@ exports.Login = async(req,res)=>{
         if(!comparePassword){
             return res.status(400).json({msg:"Password is incorrect"});
         }
-        const acesstoken = jwt.sign({id:emailexist._id},process.env.JWT_SECRET,{expiresIn:"15m"});
+        const acesstoken = jwt.sign({id:emailexist.id,role:emailexist.role},process.env.JWT_SECRET,{expiresIn:"15m"});
         const refreshtoken = jwt.sign({},process.env.REFRESH_TOKEN_SECRET,{expiresIn:"7d"});
 
         emailexist.refreshToken = refreshtoken;

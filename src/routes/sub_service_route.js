@@ -7,7 +7,7 @@ const subServiceRouter = express.Router();
 
 subServiceRouter.post("/create_subcategory",authcheck,rolecheck("admin"),ServicesS.serviceProvideCreate);
 subServiceRouter.put("/update_subcategory",authcheck,rolecheck("admin"),ServicesS.updateSubService);
-subServiceRouter.delete("/delete_service",authcheck,rolecheck("admin"),ServicesS.deleteSubService);
+subServiceRouter.delete("/delete_services",authcheck,rolecheck("admin"),ServicesS.deleteSubService);
 subServiceRouter.get("/getAllServices",authcheck,rolecheck("admin"),ServicesS.getallsubCategoryservice);
 
 

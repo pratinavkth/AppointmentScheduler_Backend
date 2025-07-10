@@ -31,10 +31,6 @@ const Services = sequelize.define("Services",
             type:DataTypes.DATE,
             defaultValue:DataTypes.NOW
         },
-        category_id: {
-            type: DataTypes.UUID,
-            allowNull: false 
-        },
         created_by: {
             type: DataTypes.UUID,
             allowNull: false 

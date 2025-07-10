@@ -8,25 +8,34 @@ const ServicesbyProviders = sequelize.define("ServicebyProviders",
             type:DataTypes.UUID,
             defaultValue:DataTypes.UUIDV4,
             primaryKey:true,
-
+        },
+        userRegistrationId:{
+            type:DataTypes.INTEGER,
+            allowNull:true,
+        },
+        service_providerName:{
+            type:DataTypes.STRING,
+            allowNull:false,
         },
         serviceName:{
             type:DataTypes.STRING,
             allowNull:false,
-
         },
         Description:{
             type:DataTypes.STRING,
             allowNull:false,
-
         },
         price:{
             type:DataTypes.DECIMAL,
             allowNull:false,
         },
-        Time:{
+        StartTime:{
             type:DataTypes.TIME,
             allowNull:false
+        },
+        EndTime:{
+            type:DataTypes.TIME,
+            allowNull:false,
         },
         provider_id: {
             type: DataTypes.UUID,

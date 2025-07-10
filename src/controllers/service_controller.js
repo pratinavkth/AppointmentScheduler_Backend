@@ -1,24 +1,29 @@
+// creating serviceProvide by admin like heartsurgeon ,barber and all
+const { where } = require("sequelize");
 const Services = require("../models/services");
 
 exports.serviceProvideCreate = async(req,res)=>{
     try {
-        const {serviceSubCategoryName,Description} = req.body;
+        const {service_sub_category,description,category_id} = req.body;
         const Created = new Date();
         const Updated = new Date();
-
+        console.log("Data taken");
         const userId = req.user.id;
-        const serviceExist = await Services.findOne({where:{serviceSubCategoryName,providerId:userId}});
+        console.log("userId",userId);
+        const serviceExist = await Services.findOne({where:{service_sub_category,created_by:userId}});
+        console.log("Data verified");
         if(serviceExist){
             return res.status(401).json({msg:"Service is Already Present"});
         }
-        let newSevice = new Services({
-            serviceSubCategoryName,
-            Description,
-            Created,
-            Updated,
+        let newSevice = await Services.create({
+            service_sub_category,
+            description,
+            category_id,
+            created_by:userId
+            // Updated,
         });
-        await newSevice.save();
-        return res.status(200).json({msg:"Service Created Succesfully by ServiceProvider"});
+        // await newSevice.save();
+        return res.status(200).json({msg:"Service Created Succesfully by ServiceProvider",data:newSevice});
     } catch (error) {
         return res.status(500).json({msg:"There is issue while creating the service",error})
         
@@ -30,7 +35,7 @@ exports.deleteSubService = async(req,res)=>{
         const {serviceSubCategoryName} = req.body;
         // const {id} = req.params;
         const userId = req.user.id;
-        const deletesubcategory = await Services.findOne({where:{serviceSubCategoryName,providerId:userId}});
+        const deletesubcategory = await Services.findOne({where:{service_sub_category:serviceSubCategoryName,created_by:userId}});
         if(!deletesubcategory){
             return res.status(401).json({msg:"There is no service with this name"})
         }
@@ -46,11 +51,11 @@ exports.updateSubService = async(req,res)=>{
     try {
         const userId = req.user.id;
 
-        const {serviceSubCategoryName,Description} =req.body;
-        if(!serviceSubCategoryName &&!Description ){
+        const {serviceSubCategoryName,description} =req.body;
+        if(!serviceSubCategoryName &&!description ){
             return res.status(400).json({msg:"There need to be some argument to update"});
         }
-        const service = await Services.findOne({ where: { id, providerId: userId } });
+        const service = await Services.findOne({ where: { created_by: userId } });
         if (!service) {
             return res.status(404).json({ msg: "Service not found or not authorized" });
         }
@@ -58,9 +63,10 @@ exports.updateSubService = async(req,res)=>{
             Updated:Date.now(),
         };
         if(serviceSubCategoryName) updateService.serviceSubCategoryName = serviceSubCategoryName;
-        if(Description) updateService.Description = Description;
+        if(description) updateService.description = description;
 
-        await Services.update(updateService,{where:{id}});
+        // await Services.update(updateService,where:{});
+        await Services.update(updateService, { where: { id: service.id } });
         return res.status(200).json({msg:"Sub Category Updated Succesfully"});
 
 

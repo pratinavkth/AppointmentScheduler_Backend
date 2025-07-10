@@ -21,7 +21,7 @@ const User = sequelize.define('User',{
         allowNull:false,
     },
     role:{
-        type: DataTypes.ENUM("user", "admin","service_provider"),
+        type: DataTypes.ENUM("user", "admin","serviceprovider"),
         default:"user",
     },
     isVerified:{

@@ -12,7 +12,8 @@ const ServiceCategory = sequelize.define("ServiceCategory",{
         allowNull:false,
     },
     description:{
-        type:DataTypes.TEXT
+        type:DataTypes.TEXT,
+        allowNull:false
     },
 
     
