@@ -5,7 +5,7 @@ const sendMail = require("../utils/sendEmail");
 
 exports.Register = async(req,res)=>{
     try {
-        const {name,email,password,role} = req.body;
+        const {name,email,password} = req.body;
         const emailexist =await User.findOne({where: {email}});
         if(emailexist){
             return res.status(401).json({msg:"Email Already Exisr"});
@@ -15,7 +15,7 @@ exports.Register = async(req,res)=>{
         let user = await User.create({name,
             email,
             password:hashedPassword,
-            role,
+            role:"user",
             isVerified:false,});
         
 
@@ -164,5 +164,49 @@ exports.logout = async(req,res)=>{
     } catch (error) {
         return res.status(500).json({msg:"Error Occured while logout :",error});
         
+    }
+}
+
+
+exports.registration_by_admin = async(req,res)=>{
+    try {
+        const {name,email,password,role} = req.body;
+        const emailexist =await User.findOne({where: {email}});
+        if(emailexist){
+            return res.status(401).json({msg:"Email Already Exisr"});
+        }
+        const hashedPassword = await bcrypt.hash(password,8);
+
+        const allowedRoles = ["admin", "serviceProvider"];
+        if (!allowedRoles.includes(role)) {
+              return res.status(400).json({ msg: "Invalid role" });
+            }
+
+        let user = await User.create({name,
+            email,
+            password:hashedPassword,
+            role,
+            isVerified:false,});
+        
+
+        // generating email token
+        const emailtoken = jwt.sign(
+            {id:user.id},
+            process.env.EMAIL_TOKEN_SECRET,
+            {expiresIn:"1d"},
+        );
+        // sending verification mail
+        const verifylink = `http://localhost:3000/index/authroute/verifyEmail?token=${emailtoken}`;
+        await sendMail(
+            user.email,
+            "Verify your Email",
+            `<p>Click  <a href="${verifylink}">here</a> to  verify your email</p>`
+
+        );
+        return res.status(200).json({
+      msg: "User registered. Please verify your email.",
+      });
+    } catch (error) {
+        return res.status(500).json({msg:"Error Occured While Registring the admin and serviceprovider "})
     }
 }

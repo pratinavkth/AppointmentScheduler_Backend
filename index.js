@@ -3,6 +3,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const sequelize = require("./src/config/db");
 const indexRoute = require("./src/routes/inndexRoute");
+const routingoauthcontroller = require("./src/controllers/oauthController");
+const authcheck = require("./src/middelwares/authcheck");
 // const {Client, Client} = require("pg");
 
 // using the libraries
@@ -29,6 +31,8 @@ sequelize.sync({alter:true})
   .catch((err)=>{
     console.error("THere is issue while connecting it",err);
   })
+
+app.get('/redirect',routingoauthcontroller.googleCallback);
 
 app.use('/index',indexRoute);
 
