@@ -11,6 +11,7 @@ indexRoute.use('/authroute',authRoutes);
 indexRoute.use('/adminRoute',adminRoutes);
 indexRoute.use('/serviceRoute',serviceRoute);
 indexRoute.use('/userRoute',userRoute1);
+
 indexRoute.use('/googleauth',googleauth);
 
 

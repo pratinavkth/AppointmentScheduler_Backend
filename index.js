@@ -1,18 +1,33 @@
-// libraries
 const express = require("express");
 const dotenv = require("dotenv");
 const sequelize = require("./src/config/db");
 const indexRoute = require("./src/routes/inndexRoute");
 const routingoauthcontroller = require("./src/controllers/oauthController");
-const authcheck = require("./src/middelwares/authcheck");
-// const {Client, Client} = require("pg");
+const http = require("http");
+const {Server} = require("socket.io");
+const Socketmiddelware = require("./src/middelwares/socketcheck");
+const { chatController } = require("./src/controllers/chat_controller");
 
 // using the libraries
-const app = express();
 dotenv.config();
+const app = express();
+app.use(express.json());
+
+
+const servers = http.createServer(app);
+const io = new Server(servers,{
+  cors:{
+    origin:'*',
+    methods:["GET","POST"],
+  }
+});
+io.use(Socketmiddelware);
+
+io.on("connection",(socket)=>{
+  chatController(io,socket);
+});
 
 // calling the controllers
-app.use(express.json());
 
 
 (async ()=>{try{
@@ -39,11 +54,10 @@ app.use('/index',indexRoute);
 
 
 // function calling starting the server
-app.listen(process.env.PORT,function(error){
+servers.listen(process.env.PORT,function(error){
     if(error){
         console.error(error);
     }
     else{
     console.log("Server is running on port",process.env.PORT)}});
 
-// module.exports={app};
